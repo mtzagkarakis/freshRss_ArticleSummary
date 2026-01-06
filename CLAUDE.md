@@ -1,5 +1,29 @@
 # FreshRSS Article Summary Extension - Context
 
+## Model Usage Guidelines
+
+**Default Model: Claude Sonnet 4.5**
+- Use Sonnet (claude-sonnet-4-5-20250929) for all coding tasks, debugging, refactoring, and regular development work
+- Sonnet provides excellent code quality at good speed and cost efficiency
+
+**When to Use Opus 4.5:**
+- Use Opus (claude-opus-4-5-20251101) for planning larger changes or architectural decisions
+- When using the Task tool with `subagent_type="Plan"`, specify `model="opus"` for complex planning tasks
+- Examples of when to use Opus:
+  - Designing new features with multiple components
+  - Planning major refactoring across multiple files
+  - Architectural decisions that affect the project structure
+  - Complex problem-solving requiring deep reasoning
+
+**Example:**
+```
+For large architectural planning:
+Task(subagent_type="Plan", model="opus", prompt="Plan implementation of...")
+
+For regular coding:
+Use default Sonnet model (no need to specify)
+```
+
 ## Project Overview
 This is a FreshRSS extension that adds AI-powered article summarization capabilities to FreshRSS, a self-hosted RSS feed aggregator. The extension allows users to generate summaries of articles on-demand using any language model API that conforms to the OpenAI API specification.
 
