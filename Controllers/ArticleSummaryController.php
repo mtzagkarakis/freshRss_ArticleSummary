@@ -12,8 +12,8 @@ class FreshExtension_ArticleSummary_Controller extends Minz_ActionController
     $oai_key = FreshRSS_Context::$user_conf->oai_key;
     $oai_model = FreshRSS_Context::$user_conf->oai_model;
     $oai_prompt = FreshRSS_Context::$user_conf->oai_prompt;
-    $oai_max_tokens = FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048;
-    $oai_temperature = FreshRSS_Context::$user_conf->oai_temperature ?: 0.7;
+    $oai_max_tokens = (int)(FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048);
+    $oai_temperature = (float)(FreshRSS_Context::$user_conf->oai_temperature ?: 0.7);
 
     if (
       $this->isEmpty($oai_url)
