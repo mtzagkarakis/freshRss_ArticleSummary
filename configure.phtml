@@ -2,28 +2,28 @@
 $oai_url = FreshRSS_Context::$user_conf->oai_url;
 $oai_key = FreshRSS_Context::$user_conf->oai_key;
 $oai_model = FreshRSS_Context::$user_conf->oai_model;
-$oai_prompt = FreshRSS_Context::$user_conf->oai_prompt ?: 'You are an automated RSS summarization engine.
-
-Your task is to read the following RSS article content and produce a concise, factual summary suitable for quick consumption.
+$oai_prompt = FreshRSS_Context::$user_conf->oai_prompt ?: 'You are an automated RSS summarization engine. Read the article and produce a clear, structured summary for faster comprehension.
 
 Instructions:
-- Summarize the core ideas and key facts only.
-- Preserve important names, dates, figures, and outcomes.
-- Do not add interpretation, speculation, or external knowledge.
-- Do not repeat boilerplate, navigation text, ads, or legal disclaimers.
-- Ignore unrelated links, author bios, and promotional content.
-- If the article contains multiple sections, try to summarize PER section to communicate the intent of the writer.
-- If the content is incomplete or unclear, summarize only what is explicitly stated.
+- Extract and summarize the core ideas and key facts from each section
+- Preserve important names, dates, figures, and outcomes
+- Ignore boilerplate, ads, navigation text, author bios, and promotional content
+- Do not add interpretation, speculation, or external knowledge
+- Identify distinct sections/topics in the article and summarize each one separately
+- After section summaries, provide a brief overall conclusion/summary
 
-Output requirements:
-- Length: as much as needed to communicate the main idea per article section
-- Tone: neutral, informative, and objective.
-- Format: prefer markdown.
-- Do not reference the article as "this article" or "the text above."
-- Do not mention RSS, feeds, or summarization.
+Output Format (use markdown):
+- For each article section: use ## heading with section topic, then summarize that section
+- Use **bold** for key terms, names, and important concepts
+- Use bullet points (•) for listing multiple facts or points within a section
+- Length: as much as needed to fully communicate the main ideas and enable faster reading than the original
+- End with "## Summary" or "## Conclusion" - a brief synthesis of all sections
 
-If no meaningful content is present, respond with:
-"No substantive content available to summarize."';
+Output Requirements:
+- Tone: neutral, informative, objective
+- Do not reference "the article" or "the text" - write as direct information
+- Do not mention RSS, feeds, or summarization
+- If no meaningful content exists, respond: "No substantive content available to summarize."';
 $oai_max_tokens = FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048; // Default to 2048
 $oai_temperature = FreshRSS_Context::$user_conf->oai_temperature ?: 1.0; // Default to 1.0
 ?>
