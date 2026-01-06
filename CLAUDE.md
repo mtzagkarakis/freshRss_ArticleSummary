@@ -71,7 +71,6 @@ FreshRSS uses an extension system based on PHP classes:
   - `oai_key`: API authentication key
   - `oai_model`: Model name (e.g., `gpt-5-mini`, `gpt-5-turbo`)
   - `oai_prompt`: System prompt for summarization
-  - `oai_provider`: API provider type (`openai` or `ollama`)
   - `oai_max_tokens`: Maximum tokens for summary output (default: 2048)
   - `oai_temperature`: Output randomness/creativity 0.0-2.0 (default: 0.7)
 
@@ -85,7 +84,7 @@ FreshRSS uses an extension system based on PHP classes:
   - Returns JSON with API parameters for frontend to call
 - **Key Features**:
   - HTML to Markdown conversion for better LLM processing
-  - Support for both OpenAI and Ollama API formats
+  - OpenAI-compatible API format
   - Uses `max_completion_tokens` (new API parameter) instead of deprecated `max_tokens`
 
 ### `static/script.js`
@@ -112,15 +111,7 @@ FreshRSS uses an extension system based on PHP classes:
 }
 ```
 
-### Ollama API Format
-```json
-{
-  "model": "model-name",
-  "system": "prompt",
-  "prompt": "article content",
-  "stream": true
-}
-```
+The extension uses the OpenAI-compatible API format, which means it works with OpenAI's API and any other service that implements the same specification.
 
 ## How It Works
 
@@ -136,9 +127,9 @@ FreshRSS uses an extension system based on PHP classes:
 ## Configuration Notes
 
 - **URL Format**: Base URL should NOT include version path (e.g., use `https://api.openai.com/` not `https://api.openai.com/v1`)
-- The extension automatically appends `/v1/chat/completions` for OpenAI format
-- For Ollama, it uses `/api/generate` endpoint
+- The extension automatically appends `/v1/chat/completions` to the base URL
 - All configuration is per-user (stored in `FreshRSS_Context::$user_conf`)
+- Works with any OpenAI-compatible API endpoint
 
 ## Development Notes
 

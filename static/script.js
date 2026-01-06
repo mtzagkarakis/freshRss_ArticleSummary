@@ -87,12 +87,7 @@ async function summarizeButtonClick(target) {
     } else {
       // Parse parameters returned by PHP
       const oaiParams = xresp.response.data;
-      const oaiProvider = xresp.response.provider;
-      if (oaiProvider === 'openai') {
-        await sendOpenAIRequest(container, oaiParams);
-      } else {
-        await sendOllamaRequest(container, oaiParams);
-      }
+      await sendOpenAIRequest(container, oaiParams);
     }
   } catch (error) {
     console.error(error);
@@ -131,58 +126,6 @@ async function sendOpenAIRequest(container, oaiParams) {
       const chunk = decoder.decode(value, { stream: true });
       const text = JSON.parse(chunk)?.choices[0]?.message?.content || ''
       setOaiState(container, 0, null, marked.parse(text));
-    }
-  } catch (error) {
-    console.error(error);
-    setOaiState(container, 2, 'Request Failed', null);
-  }
-}
-
-
-async function sendOllamaRequest(container, oaiParams){
-  try {
-    const response = await fetch(oaiParams.oai_url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${oaiParams.oai_key}`
-      },
-      body: JSON.stringify(oaiParams)
-    });
-
-    if (!response.ok) {
-      throw new Error('Request Failed');
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder('utf-8');
-    let text = '';
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        setOaiState(container, 0, 'finish', null);
-        break;
-      }
-      buffer += decoder.decode(value, { stream: true });
-      // Try to process complete JSON objects from the buffer
-      let endIndex;
-      while ((endIndex = buffer.indexOf('\n')) !== -1) {
-        const jsonString = buffer.slice(0, endIndex).trim();
-        try {
-          if (jsonString) {
-            const json = JSON.parse(jsonString);
-            text += json.response
-            setOaiState(container, 0, null, marked.parse(text));
-          }
-        } catch (e) {
-          // If JSON parsing fails, output the error and keep the chunk for future attempts
-          console.error('Error parsing JSON:', e, 'Chunk:', jsonString);
-        }
-        // Remove the processed part from the buffer
-        buffer = buffer.slice(endIndex + 1); // +1 to remove the newline character
-      }
     }
   } catch (error) {
     console.error(error);

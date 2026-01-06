@@ -12,7 +12,6 @@ class FreshExtension_ArticleSummary_Controller extends Minz_ActionController
     $oai_key = FreshRSS_Context::$user_conf->oai_key;
     $oai_model = FreshRSS_Context::$user_conf->oai_model;
     $oai_prompt = FreshRSS_Context::$user_conf->oai_prompt;
-    $oai_provider = FreshRSS_Context::$user_conf->oai_provider;
     $oai_max_tokens = FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048;
     $oai_temperature = FreshRSS_Context::$user_conf->oai_temperature ?: 0.7;
 
@@ -48,7 +47,7 @@ class FreshExtension_ArticleSummary_Controller extends Minz_ActionController
     if (!preg_match('/\/v\d+\/?$/', $oai_url)) {
         $oai_url .= '/v1'; // If there is no version information, add /v1
     }
-    // Open AI Input
+    // OpenAI API Input
     $successResponse = array(
       'response' => array(
         'data' => array(
@@ -70,30 +69,11 @@ class FreshExtension_ArticleSummary_Controller extends Minz_ActionController
           "temperature" => $oai_temperature,
           "n" => 1 // Generate summary
         ),
-        'provider' => 'openai',
         'error' => null
       ),
       'status' => 200
     );
 
-    // Ollama API Input
-    if ($oai_provider === "ollama") {
-      $successResponse = array(
-        'response' => array(
-          'data' => array(
-            "oai_url" => rtrim($oai_url, '/') . '/api/generate',
-            "oai_key" => $oai_key,
-            "model" => $oai_model,
-            "system" => $oai_prompt,
-            "prompt" =>  $this->htmlToMarkdown($content),
-            "stream" => true,
-          ),
-          'provider' => 'ollama',
-          'error' => null
-        ),
-        'status' => 200
-      );
-    }
     echo json_encode($successResponse);
     return;
   }

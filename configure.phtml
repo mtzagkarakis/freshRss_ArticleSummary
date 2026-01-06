@@ -3,20 +3,13 @@ $oai_url = FreshRSS_Context::$user_conf->oai_url;
 $oai_key = FreshRSS_Context::$user_conf->oai_key;
 $oai_model = FreshRSS_Context::$user_conf->oai_model;
 $oai_prompt = FreshRSS_Context::$user_conf->oai_prompt;
-$oai_provider = FreshRSS_Context::$user_conf->oai_provider ?: 'openai'; // Default to OpenAI
 $oai_max_tokens = FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048; // Default to 2048
 $oai_temperature = FreshRSS_Context::$user_conf->oai_temperature ?: 0.7; // Default to 0.7
 ?>
 
 <form action="<?php echo _url('extension', 'configure', 'e', urlencode($this->getName())); ?>" method="post">
   <input type="hidden" name="_csrf" value="<?php echo FreshRSS_Auth::csrfToken(); ?>" />
-  <label for="oai_provider">Choose AI Provider</label>
-  <select name="oai_provider">
-      <option value="openai" <?php echo ($oai_provider == 'openai' ? 'selected' : ''); ?>>OpenAI</option>
-      <option value="ollama" <?php echo ($oai_provider == 'ollama' ? 'selected' : ''); ?>>Ollama</option>
-   </select>
- 
- <div id="common_config">
+  <div id="common_config">
     <label for="oai_url">Base URL (http(s)://oai.com/) without 'v1'</label>
     <input type="text" name="oai_url" id="oai_url" value="<?php echo $oai_url; ?>">
     <label for="oai_key">API Key</label>
