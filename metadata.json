@@ -1,0 +1,8 @@
+{
+  "name": "ArticleSummary",
+  "author": "Manos",
+  "description": "A powerful article summarization plugin for FreshRSS that allows users to generate summaries using a language model API conforming to the OpenAI API specification.",
+  "version": "1.0.0",
+  "entrypoint": "ArticleSummary",
+  "type": "user"
+}
