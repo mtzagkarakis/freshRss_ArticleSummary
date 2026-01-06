@@ -49,6 +49,7 @@ FreshRSS uses an extension system based on PHP classes:
 ├── extension.php                          # Main extension class
 ├── metadata.json                          # Extension metadata
 ├── configure.phtml                        # Configuration UI template
+├── test-libraries.html                    # Test file for validating axios/marked versions
 ├── Controllers/
 │   └── ArticleSummaryController.php      # Handles summarization requests
 └── static/
@@ -137,6 +138,31 @@ The extension uses the OpenAI-compatible API format, which means it works with O
 - Controllers must follow naming convention: `FreshExtension_{Name}_Controller`
 - CSP policies may need adjustment for external API calls
 - HTML content is converted to Markdown to reduce token usage and improve LLM understanding
+
+## Testing
+
+### Library Version Testing
+
+**Current Versions:**
+- **axios.js**: ~52KB (stable version, exact version not exposed)
+- **marked.js**: v15.0.1 (38KB)
+
+**Test File:** `test-libraries.html`
+- Located in project root
+- Used to validate library updates before deployment
+- Tests the exact APIs used in production: `axios.post()` and `marked.parse()`
+- Makes real HTTP requests to verify functionality
+- Compare old vs new versions side-by-side
+
+**How to Test Library Updates:**
+1. Download new library versions and save as `.new.js` (e.g., `axios.new.js`, `marked.new.js`)
+2. Open `test-libraries.html` in a browser
+3. Test old versions first to establish baseline
+4. Test new versions to verify compatibility
+5. If tests pass, rename `.new.js` files to replace old versions
+6. If tests fail, investigate breaking changes before updating
+
+**Important:** The extension uses basic, stable APIs that rarely break, but always test before updating in production
 
 ## Common Issues & Solutions
 

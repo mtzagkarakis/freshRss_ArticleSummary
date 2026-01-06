@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Version Test - FreshRSS Article Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Library Version Test - FreshRSS Article Summary</h1>
+
+    <div class="test-section" id="old-versions">
+        <h2>Old Versions (Currently in use)</h2>
+        <p><strong>Axios:</strong> Current version (~52KB)</p>
+        <p><strong>Marked:</strong> v15.0.1 (38KB)</p>
+        <button onclick="testOldVersions()">Test Old Versions</button>
+        <div id="old-output" class="output"></div>
+    </div>
+
+    <div class="test-section" id="new-versions">
+        <h2>New Versions (For testing)</h2>
+        <p><strong>Axios:</strong> v1.13.2 (54KB)</p>
+        <p><strong>Marked:</strong> v17.0.1 (41KB)</p>
+        <button onclick="testNewVersions()">Test New Versions</button>
+        <div id="new-output" class="output"></div>
+    </div>
+
+    <!-- Old Versions -->
+    <script src="static/axios.js"></script>
+    <script src="static/marked.js"></script>
+
+    <script>
+        let axiosOld = window.axios;
+        let markedOld = window.marked;
+
+        async function testOldVersions() {
+            const output = document.getElementById('old-output');
+            output.innerHTML = 'Testing old versions...\n\n';
+
+            try {
+                // Test Marked
+                const testMarkdown = '# Test Heading\n\nThis is **bold** and *italic* text.\n\n- List item 1\n- List item 2';
+                const parsedHTML = markedOld.parse(testMarkdown);
+                output.innerHTML += '✅ Marked.parse() works:\n' + parsedHTML + '\n\n';
+
+                // Test Axios (mock request)
+                output.innerHTML += '✅ Axios available: ' + typeof axiosOld.post + '\n';
+                output.innerHTML += '✅ Axios version info: ' + (axiosOld.VERSION || 'Version not exposed') + '\n\n';
+
+                // Test Axios POST structure (what you use in script.js)
+                const mockUrl = 'https://httpbin.org/post';
+                const mockData = { test: 'data' };
+                output.innerHTML += 'Testing Axios POST to httpbin.org...\n';
+
+                const response = await axiosOld.post(mockUrl, mockData, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                output.innerHTML += '✅ Axios POST successful!\n';
+                output.innerHTML += 'Response status: ' + response.status + '\n';
+
+                document.getElementById('old-versions').classList.add('success');
+            } catch (error) {
+                output.innerHTML += '❌ Error: ' + error.message + '\n';
+                document.getElementById('old-versions').classList.add('error');
+            }
+        }
+
+        async function testNewVersions() {
+            const output = document.getElementById('new-output');
+            output.innerHTML = 'Testing new versions...\n\n';
+
+            try {
+                // Load new versions dynamically
+                output.innerHTML += 'Loading new Axios...\n';
+                await loadScript('static/axios.new.js');
+                const axiosNew = window.axios;
+
+                output.innerHTML += 'Loading new Marked...\n';
+                await loadScript('static/marked.new.js');
+                const markedNew = window.marked;
+
+                // Test Marked
+                const testMarkdown = '# Test Heading\n\nThis is **bold** and *italic* text.\n\n- List item 1\n- List item 2';
+                const parsedHTML = markedNew.parse(testMarkdown);
+                output.innerHTML += '✅ Marked.parse() works:\n' + parsedHTML + '\n\n';
+
+                // Test Axios
+                output.innerHTML += '✅ Axios available: ' + typeof axiosNew.post + '\n';
+                output.innerHTML += '✅ Axios version: ' + (axiosNew.VERSION || 'Version not exposed') + '\n\n';
+
+                // Test Axios POST structure
+                const mockUrl = 'https://httpbin.org/post';
+                const mockData = { test: 'data' };
+                output.innerHTML += 'Testing Axios POST to httpbin.org...\n';
+
+                const response = await axiosNew.post(mockUrl, mockData, {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                output.innerHTML += '✅ Axios POST successful!\n';
+                output.innerHTML += 'Response status: ' + response.status + '\n';
+
+                document.getElementById('new-versions').classList.add('success');
+            } catch (error) {
+                output.innerHTML += '❌ Error: ' + error.message + '\n';
+                document.getElementById('new-versions').classList.add('error');
+            }
+        }
+
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+    </script>
+</body>
+</html>
