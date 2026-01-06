@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(composer:*)",
+      "Bash(php:*)",
+      "Bash(npm:*)",
+      "Bash(node:*)"
+    ],
+    "deny": [
+      "Read(./.env*)",
+      "Read(./config/secrets*)",
+      "Bash(rm -rf:*)",
+      "Bash(curl:*)",
+      "WebFetch"
+    ],
+    "additionalDirectories": []
+  },
+  "env": {},
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "hooks": {}
+}
