@@ -45,7 +45,7 @@ class ArticleSummaryExtension extends Minz_Extension
       FreshRSS_Context::$user_conf->oai_model = Minz_Request::param('oai_model', '');
       FreshRSS_Context::$user_conf->oai_prompt = Minz_Request::param('oai_prompt', '');
       FreshRSS_Context::$user_conf->oai_max_tokens = (int)Minz_Request::param('oai_max_tokens', 2048);
-      FreshRSS_Context::$user_conf->oai_temperature = (float)Minz_Request::param('oai_temperature', 0.7);
+      FreshRSS_Context::$user_conf->oai_temperature = (float)Minz_Request::param('oai_temperature', 1.0);
       FreshRSS_Context::$user_conf->save();
     }
   }

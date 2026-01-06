@@ -27,7 +27,7 @@ To configure the extension, follow these steps:
 3. **Model Name**: Specify the model name you wish to use for summarization (e.g., `gpt-5-mini`, `gpt-5-turbo`). This extension supports GPT-5 and newer models.
 4. **Prompt**: Add a prompt that will be included before the article content when sending the request to the API.
 5. **Max Tokens** (optional): Set the maximum number of tokens for the summary output. Default is 2048.
-6. **Temperature** (optional): Control the randomness/creativity of the output (0.0 to 2.0). Lower values make output more focused and deterministic. Default is 0.7.
+6. **Temperature** (optional): Control the randomness/creativity of the output (0.0 to 2.0). Lower values make output more focused and deterministic. Default is 1.0. Note: Some models (like gpt-5-mini) only support the default value of 1.0.
 
 ## Usage
 
