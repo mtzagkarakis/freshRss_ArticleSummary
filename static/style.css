@@ -348,3 +348,169 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
+
+/* Increase article width for better readability */
+.flux .flux_content,
+.flux_content,
+.content,
+#stream .flux,
+.entry {
+  max-width: none !important;
+  width: 95% !important;
+}
+
+/* Summary box collapse header */
+.oai-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75em 1em;
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  border-radius: 6px 6px 0 0;
+  margin: -1.5em -1.5em 1em -1.5em;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.oai-summary-title {
+  color: white;
+  font-weight: 600;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+.oai-collapse-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 0.4em 0.8em;
+  font-size: 0.9em;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.oai-collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Collapsed state */
+.oai-summary-wrap.collapsed .oai-summary-body {
+  display: none;
+}
+
+.oai-summary-wrap.collapsed {
+  padding: 0;
+  margin: 1em 0;
+}
+
+.oai-summary-wrap.collapsed .oai-summary-header {
+  margin: 0;
+  border-radius: 6px;
+}
+
+.oai-summary-body {
+  padding: 0 1.5em 1.5em 1.5em;
+}
+
+/* Article controls container */
+.oai-article-controls {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  padding: 1em 0;
+  margin: 1em 0;
+  border-top: 2px solid #e2e8f0;
+  border-bottom: 2px solid #e2e8f0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  padding: 1em 1.5em;
+  border-radius: 6px;
+}
+
+/* Original article link */
+.oai-article-link {
+  background: #3182ce;
+  color: white !important;
+  text-decoration: none !important;
+  padding: 0.5em 1.2em;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.oai-article-link:hover {
+  background: #2c5282;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  text-decoration: none !important;
+}
+
+/* Primary article link - more prominent */
+.oai-article-link-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  font-size: 1.05em;
+  padding: 0.75em 1.5em;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  border: 2px solid #1e40af;
+}
+
+.oai-article-link-primary:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Readability toggle button */
+.oai-readability-toggle {
+  background: #48bb78;
+  color: white;
+  border: none;
+  padding: 0.5em 1.2em;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.oai-readability-toggle:hover {
+  background: #38a169;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.oai-readability-toggle:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.oai-readability-toggle.active {
+  background: #ed8936;
+}
+
+.oai-readability-toggle.active:hover {
+  background: #dd6b20;
+}
+
+/* Article content wrapper for readability mode */
+.oai-article-content {
+  position: relative;
+}
+
+.oai-article-content.readability-mode {
+  background: white;
+  padding: 2em;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 1em auto;
+}

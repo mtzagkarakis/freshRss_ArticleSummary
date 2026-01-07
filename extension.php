@@ -35,8 +35,21 @@ class ArticleSummaryExtension extends Minz_Extension
       )
     ));
 
+    $url_readability = Minz_Url::display(array(
+      'c' => 'ArticleSummary',
+      'a' => 'readability',
+      'params' => array(
+        'id' => $entry->id()
+      )
+    ));
+
     $entry->_content(
       '<div class="oai-summary-wrap" data-entry-id="' . $entry->id() . '">'
+      . '<div class="oai-summary-header">'
+      . '<h3 class="oai-summary-title">AI Summary & Q&A</h3>'
+      . '<button class="oai-collapse-btn">Collapse</button>'
+      . '</div>'
+      . '<div class="oai-summary-body">'
       . '<button data-request="' . $url_summary . '" class="oai-summary-btn"></button>'
       . '<div class="oai-summary-content"></div>'
       . '<button data-request="' . $url_question . '" class="oai-qa-button">Ask a Question</button>'
@@ -48,7 +61,17 @@ class ArticleSummaryExtension extends Minz_Extension
       . '</div>'
       . '</div>'
       . '</div>'
+      . '</div>'
+      . '<div class="oai-article-controls">'
+      . '<a href="' . htmlspecialchars($entry->link()) . '" target="_blank" rel="noopener noreferrer" class="oai-article-link oai-article-link-primary">🔗 Read Full Article on ' . parse_url($entry->link(), PHP_URL_HOST) . '</a>'
+      . '<button class="oai-readability-toggle" data-request="' . $url_readability . '">📖 Toggle Reader Mode</button>'
+      . '</div>'
+      . '<div class="oai-article-content" data-entry-id="' . $entry->id() . '">'
+      . '<div class="oai-article-original">'
       . $entry->content()
+      . '</div>'
+      . '<div class="oai-article-readable" style="display: none;"></div>'
+      . '</div>'
     );
     return $entry;
   }
@@ -62,6 +85,7 @@ class ArticleSummaryExtension extends Minz_Extension
       FreshRSS_Context::$user_conf->oai_prompt = Minz_Request::param('oai_prompt', '');
       FreshRSS_Context::$user_conf->oai_max_tokens = (int)Minz_Request::param('oai_max_tokens', 2048);
       FreshRSS_Context::$user_conf->oai_temperature = (float)Minz_Request::param('oai_temperature', 1.0);
+      FreshRSS_Context::$user_conf->oai_readability_default = (bool)Minz_Request::param('oai_readability_default', false);
       FreshRSS_Context::$user_conf->save();
     }
   }

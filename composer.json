@@ -1,0 +1,14 @@
+{
+  "name": "freshrss/xextension-articlesummary",
+  "description": "FreshRSS extension for AI-powered article summarization with readability support",
+  "type": "library",
+  "require": {
+    "php": ">=7.4",
+    "fivefilters/readability.php": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "FreshExtension\\ArticleSummary\\": "."
+    }
+  }
+}

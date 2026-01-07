@@ -1,10 +1,14 @@
 if (document.readyState && document.readyState !== 'loading') {
   configureSummarizeButtons();
   configureQAButtons();
+  configureCollapseButtons();
+  configureReadabilityButtons();
 } else {
   document.addEventListener('DOMContentLoaded', function() {
     configureSummarizeButtons();
     configureQAButtons();
+    configureCollapseButtons();
+    configureReadabilityButtons();
   }, false);
 }
 
@@ -377,5 +381,99 @@ async function sendQuestionRequest(container, oaiParams, entryId, question, hist
   } catch (error) {
     console.error(error);
     displayAssistantMessage(container, 'Error: Request failed. Please try again.');
+  }
+}
+
+// Collapse/Expand functionality
+function configureCollapseButtons() {
+  document.getElementById('global').addEventListener('click', function(e) {
+    for (var target = e.target; target && target != this; target = target.parentNode) {
+      if (target.matches('.oai-collapse-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const container = target.closest('.oai-summary-wrap');
+        container.classList.toggle('collapsed');
+        target.textContent = container.classList.contains('collapsed') ? 'Expand' : 'Collapse';
+        break;
+      }
+    }
+  }, false);
+}
+
+// Readability functionality
+function configureReadabilityButtons() {
+  document.getElementById('global').addEventListener('click', function(e) {
+    for (var target = e.target; target && target != this; target = target.parentNode) {
+      if (target.matches('.oai-readability-toggle')) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleReadabilityMode(target);
+        break;
+      }
+    }
+  }, false);
+}
+
+async function toggleReadabilityMode(button) {
+  const container = button.closest('.oai-article-content');
+  const entryId = container.dataset.entryId;
+  const originalContent = container.querySelector('.oai-article-original');
+  const readableContent = container.querySelector('.oai-article-readable');
+
+  // Check if already in readability mode
+  if (container.classList.contains('readability-mode')) {
+    // Switch back to original
+    container.classList.remove('readability-mode');
+    originalContent.style.display = '';
+    readableContent.style.display = 'none';
+    button.textContent = 'Toggle Reader Mode';
+    button.classList.remove('active');
+  } else {
+    // Check if readable content is already loaded
+    if (readableContent.innerHTML.trim() !== '') {
+      // Already loaded, just show it
+      container.classList.add('readability-mode');
+      originalContent.style.display = 'none';
+      readableContent.style.display = '';
+      button.textContent = 'Show Original';
+      button.classList.add('active');
+    } else {
+      // Need to fetch readable content
+      button.disabled = true;
+      button.textContent = 'Loading...';
+
+      try {
+        const url = button.dataset.request;
+        if (!url) {
+          throw new Error('Readability URL not configured');
+        }
+        const response = await axios.post(url, {
+          ajax: true,
+          _csrf: context.csrf
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const xresp = response.data;
+
+        if (response.status === 200 && xresp.response && !xresp.response.error) {
+          readableContent.innerHTML = xresp.response.data;
+          container.classList.add('readability-mode');
+          originalContent.style.display = 'none';
+          readableContent.style.display = '';
+          button.textContent = 'Show Original';
+          button.classList.add('active');
+        } else {
+          throw new Error(xresp.response?.data || 'Failed to load readable content');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Failed to load reader mode: ' + error.message);
+      } finally {
+        button.disabled = false;
+      }
+    }
   }
 }

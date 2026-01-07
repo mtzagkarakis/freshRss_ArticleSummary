@@ -26,6 +26,7 @@ Output Requirements:
 - If no meaningful content exists, respond: "No substantive content available to summarize."';
 $oai_max_tokens = FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048; // Default to 2048
 $oai_temperature = FreshRSS_Context::$user_conf->oai_temperature ?: 1.0; // Default to 1.0
+$oai_readability_default = FreshRSS_Context::$user_conf->oai_readability_default ?? false; // Default to false
 ?>
 
 <form action="<?php echo _url('extension', 'configure', 'e', urlencode($this->getName())); ?>" method="post">
@@ -43,6 +44,10 @@ $oai_temperature = FreshRSS_Context::$user_conf->oai_temperature ?: 1.0; // Defa
     <input type="number" name="oai_max_tokens" id="oai_max_tokens" value="<?php echo $oai_max_tokens; ?>" min="1" max="32000">
     <label for="oai_temperature">Temperature (0-2, default: 1.0)</label>
     <input type="number" name="oai_temperature" id="oai_temperature" value="<?php echo $oai_temperature; ?>" min="0" max="2" step="0.1">
+    <label for="oai_readability_default">
+      <input type="checkbox" name="oai_readability_default" id="oai_readability_default" value="1" <?php echo $oai_readability_default ? 'checked' : ''; ?>>
+      Enable Reader Mode by default
+    </label>
   </div>
   <hr />
   <button type="submit">Save</button>

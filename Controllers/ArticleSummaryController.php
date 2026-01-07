@@ -202,6 +202,82 @@ Context: The user has read a summary and wants to dive deeper into specific aspe
     return;
   }
 
+  public function readabilityAction()
+  {
+    $this->view->_layout(false);
+    // Set response header to JSON
+    header('Content-Type: application/json');
+
+    $entry_id = Minz_Request::param('id');
+    $entry_dao = FreshRSS_Factory::createEntryDao();
+    $entry = $entry_dao->searchById($entry_id);
+
+    if ($entry === null) {
+      echo json_encode(array(
+        'response' => array(
+          'data' => 'Entry not found',
+          'error' => 'not_found'
+        ),
+        'status' => 404
+      ));
+      return;
+    }
+
+    try {
+      // Check if Readability library is available
+      $autoloadPath = __DIR__ . '/../vendor/autoload.php';
+      if (!file_exists($autoloadPath)) {
+        throw new Exception('Readability library not installed. Please run: composer install');
+      }
+
+      require_once $autoloadPath;
+
+      // Get the article content
+      $content = $entry->content();
+      $url = $entry->link();
+
+      // Create Readability object
+      $readability = new \fivefilters\Readability\Readability(new \fivefilters\Readability\Configuration([
+        'FixRelativeURLs' => true,
+        'OriginalURL' => $url,
+        'SummonCthulhu' => true, // More aggressive content extraction
+      ]));
+
+      // Parse the content
+      $readability->parse($content);
+
+      // Get the readable content
+      $readableContent = $readability->getContent();
+      $title = $readability->getTitle();
+
+      // Build the readable HTML
+      $html = '<div class="readable-article">';
+      if ($title) {
+        $html .= '<h1 class="readable-title">' . htmlspecialchars($title) . '</h1>';
+      }
+      $html .= $readableContent;
+      $html .= '</div>';
+
+      echo json_encode(array(
+        'response' => array(
+          'data' => $html,
+          'error' => null
+        ),
+        'status' => 200
+      ));
+    } catch (Exception $e) {
+      echo json_encode(array(
+        'response' => array(
+          'data' => 'Failed to process content: ' . $e->getMessage(),
+          'error' => 'processing'
+        ),
+        'status' => 500
+      ));
+    }
+
+    return;
+  }
+
   private function isEmpty($item)
   {
     return $item === null || trim($item) === '';
