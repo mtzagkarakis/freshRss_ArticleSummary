@@ -235,6 +235,15 @@ Context: The user has read a summary and wants to dive deeper into specific aspe
       // Get the article content
       $content = $entry->content();
       $url = $entry->link();
+      $title = $entry->title();
+
+      // Wrap content in proper HTML document structure
+      // Readability expects a full HTML document, not just a fragment
+      $htmlDoc = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' .
+                 htmlspecialchars($title) .
+                 '</title></head><body><article>' .
+                 $content .
+                 '</article></body></html>';
 
       // Create Readability object
       $readability = new \fivefilters\Readability\Readability(new \fivefilters\Readability\Configuration([
@@ -244,7 +253,7 @@ Context: The user has read a summary and wants to dive deeper into specific aspe
       ]));
 
       // Parse the content
-      $readability->parse($content);
+      $readability->parse($htmlDoc);
 
       // Get the readable content
       $readableContent = $readability->getContent();
