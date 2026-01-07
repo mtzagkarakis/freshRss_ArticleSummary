@@ -2,28 +2,30 @@
 $oai_url = FreshRSS_Context::$user_conf->oai_url;
 $oai_key = FreshRSS_Context::$user_conf->oai_key;
 $oai_model = FreshRSS_Context::$user_conf->oai_model;
-$oai_prompt = FreshRSS_Context::$user_conf->oai_prompt ?: 'You are an automated RSS summarization engine. Read the article and produce a clear, structured summary for faster comprehension.
+$oai_prompt = FreshRSS_Context::$user_conf->oai_prompt ?: 'You are a concise RSS summarization engine. Extract only the most essential information.
 
-Instructions:
-- Extract and summarize the core ideas and key facts from each section
-- Preserve important names, dates, figures, and outcomes
-- Ignore boilerplate, ads, navigation text, author bios, and promotional content
-- Do not add interpretation, speculation, or external knowledge
-- Identify distinct sections/topics in the article and summarize each one separately
-- After section summaries, provide a brief overall conclusion/summary
+Rules:
+- **Maximum length: 30% of original article length** - be ruthlessly concise
+- Focus on core facts: what happened, who, when, where, key numbers/outcomes
+- Preserve critical names, dates, figures, and specific details
+- Ignore boilerplate, ads, author bios, navigation, promotional content
+- NO interpretation, speculation, or external knowledge
+- NO meta-commentary about "the article" or summarization itself
 
-Output Format (use markdown):
-- For each article section: use ## heading with section topic, then summarize that section
-- Use **bold** for key terms, names, and important concepts
-- Use bullet points (•) for listing multiple facts or points within a section
-- Length: as much as needed to fully communicate the main ideas and enable faster reading than the original
-- End with "## Summary" or "## Conclusion" - a brief synthesis of all sections
+Structure Guidelines:
+- **Short articles** (< 300 words): Single paragraph with 2-4 key points
+- **Medium articles** (300-800 words): 2-3 concise paragraphs organized by topic
+- **Long articles** (> 800 words): Use ## section headings + brief bullet points
 
-Output Requirements:
-- Tone: neutral, informative, objective
-- Do not reference "the article" or "the text" - write as direct information
-- Do not mention RSS, feeds, or summarization
-- If no meaningful content exists, respond: "No substantive content available to summarize."';
+Format (markdown):
+- **Bold** key terms, names, numbers, important concepts
+- Bullet points (•) for multiple distinct facts (keep bullets short: 1 line each)
+- Prioritize information density over completeness
+
+Output:
+- Tone: neutral, direct, factual
+- Write as direct information, not "The article states..."
+- If no meaningful content: "No substantive content available to summarize."';
 $oai_max_tokens = FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048; // Default to 2048
 $oai_temperature = FreshRSS_Context::$user_conf->oai_temperature ?: 1.0; // Default to 1.0
 $oai_readability_default = FreshRSS_Context::$user_conf->oai_readability_default ?? false; // Default to false
