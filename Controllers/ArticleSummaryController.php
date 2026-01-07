@@ -78,6 +78,130 @@ class FreshExtension_ArticleSummary_Controller extends Minz_ActionController
     return;
   }
 
+  public function questionAction()
+  {
+    $this->view->_layout(false);
+    // Set response header to JSON
+    header('Content-Type: application/json');
+
+    $oai_url = FreshRSS_Context::$user_conf->oai_url;
+    $oai_key = FreshRSS_Context::$user_conf->oai_key;
+    $oai_model = FreshRSS_Context::$user_conf->oai_model;
+    $oai_max_tokens = (int)(FreshRSS_Context::$user_conf->oai_max_tokens ?: 2048);
+    $oai_temperature = (float)(FreshRSS_Context::$user_conf->oai_temperature ?: 1.0);
+
+    // Q&A system prompt
+    $qa_prompt = 'You are a helpful assistant answering questions about an article.
+
+Instructions:
+- Answer questions based ONLY on the article content provided
+- Be conversational and helpful
+- If the answer isn\'t in the article, say "This information is not mentioned in the article"
+- Provide specific quotes or references when relevant
+- Keep answers concise but complete
+- Use markdown formatting when appropriate
+
+Context: The user has read a summary and wants to dive deeper into specific aspects of the article.';
+
+    if (
+      $this->isEmpty($oai_url)
+      || $this->isEmpty($oai_key)
+      || $this->isEmpty($oai_model)
+    ) {
+      echo json_encode(array(
+        'response' => array(
+          'data' => 'missing config',
+          'error' => 'configuration'
+        ),
+        'status' => 200
+      ));
+      return;
+    }
+
+    $entry_id = Minz_Request::param('id');
+    $entry_dao = FreshRSS_Factory::createEntryDao();
+    $entry = $entry_dao->searchById($entry_id);
+
+    if ($entry === null) {
+      echo json_encode(array('status' => 404));
+      return;
+    }
+
+    // Get conversation history from request
+    $history = json_decode(Minz_Request::param('history', '[]'), true);
+    $question = Minz_Request::param('question', '');
+
+    if ($this->isEmpty($question)) {
+      echo json_encode(array(
+        'response' => array(
+          'data' => 'question required',
+          'error' => 'validation'
+        ),
+        'status' => 400
+      ));
+      return;
+    }
+
+    $content = $entry->content();
+    $articleMarkdown = $this->htmlToMarkdown($content);
+
+    // Build messages array
+    $messages = [
+      [
+        "role" => "system",
+        "content" => $qa_prompt
+      ],
+      [
+        "role" => "user",
+        "content" => "Article content:\n\n" . $articleMarkdown
+      ],
+      [
+        "role" => "assistant",
+        "content" => "I've read the article. I'm ready to answer your questions based on its content."
+      ]
+    ];
+
+    // Add conversation history
+    if (!empty($history) && is_array($history)) {
+      foreach ($history as $msg) {
+        if (isset($msg['role']) && isset($msg['content'])) {
+          $messages[] = $msg;
+        }
+      }
+    }
+
+    // Add current question
+    $messages[] = [
+      "role" => "user",
+      "content" => $question
+    ];
+
+    // Process $oai_url
+    $oai_url = rtrim($oai_url, '/');
+    if (!preg_match('/\/v\d+\/?$/', $oai_url)) {
+        $oai_url .= '/v1';
+    }
+
+    $successResponse = array(
+      'response' => array(
+        'data' => array(
+          "oai_url" => $oai_url . '/chat/completions',
+          "oai_key" => $oai_key,
+          "model" => $oai_model,
+          "messages" => $messages,
+          "max_completion_tokens" => $oai_max_tokens,
+          "temperature" => $oai_temperature,
+          "n" => 1
+        ),
+        'error' => null
+      ),
+      'status' => 200
+    );
+
+    echo json_encode($successResponse);
+    return;
+  }
+
   private function isEmpty($item)
   {
     return $item === null || trim($item) === '';

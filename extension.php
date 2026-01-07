@@ -27,10 +27,26 @@ class ArticleSummaryExtension extends Minz_Extension
       )
     ));
 
+    $url_question = Minz_Url::display(array(
+      'c' => 'ArticleSummary',
+      'a' => 'question',
+      'params' => array(
+        'id' => $entry->id()
+      )
+    ));
+
     $entry->_content(
-      '<div class="oai-summary-wrap">'
+      '<div class="oai-summary-wrap" data-entry-id="' . $entry->id() . '">'
       . '<button data-request="' . $url_summary . '" class="oai-summary-btn"></button>'
       . '<div class="oai-summary-content"></div>'
+      . '<button data-request="' . $url_question . '" class="oai-qa-button">Ask a Question</button>'
+      . '<div class="oai-chatbox">'
+      . '<div class="oai-chat-messages"></div>'
+      . '<div class="oai-chat-input-area">'
+      . '<textarea class="oai-chat-input" placeholder="Ask a question about this article..." rows="2"></textarea>'
+      . '<button class="oai-chat-send">Send</button>'
+      . '</div>'
+      . '</div>'
       . '</div>'
       . $entry->content()
     );
