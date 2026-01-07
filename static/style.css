@@ -370,24 +370,23 @@
   50% { opacity: 0.5; }
 }
 
-/* Constrain all content to 950px width */
-#stream,
-#panel,
-.flux,
-.flux .flux_content,
-.flux_content,
-.content,
-.entry,
-.day {
+/* Constrain only opened article content to 950px width */
+/* Keep feed list full width, only constrain when reading individual articles */
+.flux.current .flux_content,
+.flux.current .content,
+.flux.current .entry {
   max-width: 950px !important;
   width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-/* Ensure stream container is also centered */
-#stream.reader {
+/* Reader mode specific constraint */
+body.reader .flux_content,
+body.reader .content,
+body.reader .entry {
   max-width: 950px !important;
+  width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
@@ -567,18 +566,12 @@
     max-width: 800px;
   }
 
-  #stream,
-  #panel,
-  .flux,
-  .flux .flux_content,
-  .flux_content,
-  .content,
-  .entry,
-  .day {
-    max-width: 800px !important;
-  }
-
-  #stream.reader {
+  .flux.current .flux_content,
+  .flux.current .content,
+  .flux.current .entry,
+  body.reader .flux_content,
+  body.reader .content,
+  body.reader .entry {
     max-width: 800px !important;
   }
 
@@ -598,18 +591,12 @@
     padding: 1em;
   }
 
-  #stream,
-  #panel,
-  .flux,
-  .flux .flux_content,
-  .flux_content,
-  .content,
-  .entry,
-  .day {
-    max-width: 100% !important;
-  }
-
-  #stream.reader {
+  .flux.current .flux_content,
+  .flux.current .content,
+  .flux.current .entry,
+  body.reader .flux_content,
+  body.reader .content,
+  body.reader .entry {
     max-width: 100% !important;
   }
 
