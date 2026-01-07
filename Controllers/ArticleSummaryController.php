@@ -224,10 +224,10 @@ Context: The user has read a summary and wants to dive deeper into specific aspe
     }
 
     try {
-      // Check if Readability library is available
-      $autoloadPath = __DIR__ . '/../vendor/autoload.php';
+      // Load bundled Readability library
+      $autoloadPath = __DIR__ . '/../libs/autoload.php';
       if (!file_exists($autoloadPath)) {
-        throw new Exception('Readability library not installed. Please run: composer install');
+        throw new Exception('Readability library files are missing from libs/ directory');
       }
 
       require_once $autoloadPath;
