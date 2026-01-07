@@ -415,7 +415,15 @@ function configureReadabilityButtons() {
 }
 
 async function toggleReadabilityMode(button) {
-  const container = button.closest('.oai-article-content');
+  // The button is in .oai-article-controls, and .oai-article-content is the next sibling
+  const controlsDiv = button.closest('.oai-article-controls');
+  const container = controlsDiv.nextElementSibling;
+
+  if (!container || !container.classList.contains('oai-article-content')) {
+    console.error('Could not find article content container');
+    return;
+  }
+
   const entryId = container.dataset.entryId;
   const originalContent = container.querySelector('.oai-article-original');
   const readableContent = container.querySelector('.oai-article-readable');
