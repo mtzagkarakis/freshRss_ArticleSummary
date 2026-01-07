@@ -12,7 +12,6 @@ use fivefilters\Readability\Nodes\DOM\DOMCdataSection;
 use fivefilters\Readability\Nodes\NodeUtility;
 use Psr\Log\LoggerInterface;
 use Masterminds\HTML5;
-use League\Uri\BaseUri;
 
 /**
  * Class Readability.
@@ -756,16 +755,13 @@ class Readability
         }
 
         // Dotslash relative URI.
-        //if (strpos($uri, './') === 0) {
-        //    return $pathBase . substr($uri, 2);
-        //}
-
-        $baseUri = BaseUri::from($pathBase);
-        return (string) $baseUri->resolve($uri);
+        if (strpos($uri, './') === 0) {
+            return $pathBase . substr($uri, 2);
+        }
 
         // Standard relative URI; add entire path. pathBase already includes a
         // trailing "/".
-        //return $pathBase . $uri;
+        return $pathBase . $uri;
     }
 
     /**
