@@ -11,7 +11,7 @@
 }
 
 .oai-summary-btn {
-  background: #4a5568;
+  background: #5a67d8;
   color: white;
   border: none;
   padding: 0.6em 1.25em;
@@ -30,15 +30,17 @@
 }
 
 .oai-summary-btn:hover {
-  background: #2d3748;
+  background: #4c51bf;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .oai-summary-btn:disabled {
-  background: #a0aec0;
+  background: #6b7280;
+  color: white;
   cursor: not-allowed;
   transform: none;
+  opacity: 0.8;
 }
 
 .oai-summary-content {
@@ -156,7 +158,9 @@
 }
 
 .oai-loading .oai-summary-btn {
-  background: #a0aec0;
+  background: #6b7280;
+  color: white;
+  opacity: 0.8;
 }
 
 /* Error state */
@@ -202,9 +206,11 @@
 }
 
 .oai-qa-button:disabled {
-  background: #a0aec0;
+  background: #6b7280;
+  color: white;
   cursor: not-allowed;
   transform: none;
+  opacity: 0.8;
 }
 
 .oai-chatbox {
@@ -350,8 +356,10 @@
 }
 
 .oai-chat-send:disabled {
-  background: #a0aec0;
+  background: #6b7280;
+  color: white;
   cursor: not-allowed;
+  opacity: 0.8;
 }
 
 .oai-chat-loading {
@@ -529,9 +537,11 @@ body.reader .entry {
 }
 
 .oai-readability-toggle:disabled {
-  background: #a0aec0;
+  background: #6b7280;
+  color: white;
   cursor: not-allowed;
   transform: none;
+  opacity: 0.8;
 }
 
 .oai-readability-toggle.active {
