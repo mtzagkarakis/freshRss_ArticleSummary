@@ -157,6 +157,10 @@ async function sendOpenAIRequest(container, oaiParams) {
     let body = JSON.parse(JSON.stringify(oaiParams));
     delete body['oai_url'];
     delete body['oai_key'];
+
+    // Enable streaming
+    body.stream = true;
+
     const response = await fetch(oaiParams.oai_url, {
       method: 'POST',
       headers: {
@@ -172,6 +176,8 @@ async function sendOpenAIRequest(container, oaiParams) {
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder('utf-8');
+    let buffer = '';
+    let fullText = '';
 
     while (true) {
       const { done, value } = await reader.read();
@@ -180,9 +186,33 @@ async function sendOpenAIRequest(container, oaiParams) {
         break;
       }
 
-      const chunk = decoder.decode(value, { stream: true });
-      const text = JSON.parse(chunk)?.choices[0]?.message?.content || ''
-      setOaiState(container, 0, null, marked.parse(text));
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+
+      // Keep the last incomplete line in the buffer
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine === '' || trimmedLine === 'data: [DONE]') {
+          continue;
+        }
+
+        if (trimmedLine.startsWith('data: ')) {
+          try {
+            const jsonStr = trimmedLine.substring(6);
+            const data = JSON.parse(jsonStr);
+            const content = data.choices?.[0]?.delta?.content || '';
+
+            if (content) {
+              fullText += content;
+              setOaiState(container, 0, null, marked.parse(fullText));
+            }
+          } catch (e) {
+            console.error('Error parsing SSE line:', e, trimmedLine);
+          }
+        }
+      }
     }
   } catch (error) {
     console.error(error);
@@ -334,6 +364,9 @@ async function sendQuestionRequest(container, oaiParams, entryId, question, hist
     delete body['oai_url'];
     delete body['oai_key'];
 
+    // Enable streaming
+    body.stream = true;
+
     const response = await fetch(oaiParams.oai_url, {
       method: 'POST',
       headers: {
@@ -349,7 +382,10 @@ async function sendQuestionRequest(container, oaiParams, entryId, question, hist
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder('utf-8');
+    let buffer = '';
     let fullResponse = '';
+    const messagesContainer = container.querySelector('.oai-chat-messages');
+    let lastMessage = null;
 
     while (true) {
       const { done, value } = await reader.read();
@@ -363,19 +399,41 @@ async function sendQuestionRequest(container, oaiParams, entryId, question, hist
         break;
       }
 
-      const chunk = decoder.decode(value, { stream: true });
-      const text = JSON.parse(chunk)?.choices[0]?.message?.content || '';
-      fullResponse = text;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
 
-      // Update the last message instead of creating new ones
-      const messagesContainer = container.querySelector('.oai-chat-messages');
-      let lastMessage = messagesContainer.querySelector('.oai-chat-message.assistant:last-child');
+      // Keep the last incomplete line in the buffer
+      buffer = lines.pop() || '';
 
-      if (!lastMessage) {
-        displayAssistantMessage(container, fullResponse);
-      } else {
-        lastMessage.innerHTML = marked.parse(fullResponse);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine === '' || trimmedLine === 'data: [DONE]') {
+          continue;
+        }
+
+        if (trimmedLine.startsWith('data: ')) {
+          try {
+            const jsonStr = trimmedLine.substring(6);
+            const data = JSON.parse(jsonStr);
+            const content = data.choices?.[0]?.delta?.content || '';
+
+            if (content) {
+              fullResponse += content;
+
+              // Update or create the assistant message
+              if (!lastMessage) {
+                lastMessage = document.createElement('div');
+                lastMessage.className = 'oai-chat-message assistant';
+                messagesContainer.appendChild(lastMessage);
+              }
+
+              lastMessage.innerHTML = marked.parse(fullResponse);
+              messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+          } catch (e) {
+            console.error('Error parsing SSE line:', e, trimmedLine);
+          }
+        }
       }
     }
   } catch (error) {
