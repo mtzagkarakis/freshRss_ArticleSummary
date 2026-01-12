@@ -1,3 +1,24 @@
+/* Main extension container - uses flexbox to reorder visual display */
+.oai-extension-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Article content appears FIRST in DOM (for FreshRSS subtitle extraction) but LAST visually */
+.oai-extension-container > .oai-article-content {
+  order: 3;
+}
+
+/* AI Summary appears SECOND in DOM but FIRST visually */
+.oai-extension-container > .oai-summary-wrap {
+  order: 1;
+}
+
+/* Article controls appear THIRD in DOM but SECOND visually */
+.oai-extension-container > .oai-article-controls {
+  order: 2;
+}
+
 .oai-summary-wrap {
   background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
   padding: 0;

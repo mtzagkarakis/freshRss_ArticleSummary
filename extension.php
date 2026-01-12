@@ -44,7 +44,14 @@ class ArticleSummaryExtension extends Minz_Extension
     ));
 
     $entry->_content(
-      '<div class="oai-summary-wrap" data-entry-id="' . $entry->id() . '">'
+      '<div class="oai-extension-container">'
+      . '<div class="oai-article-content" data-entry-id="' . $entry->id() . '">'
+      . '<div class="oai-article-original">'
+      . $entry->content()
+      . '</div>'
+      . '<div class="oai-article-readable" style="display: none;"></div>'
+      . '</div>'
+      . '<div class="oai-summary-wrap" data-entry-id="' . $entry->id() . '">'
       . '<div class="oai-summary-header">'
       . '<h3 class="oai-summary-title">AI Summary & Q&A</h3>'
       . '<button class="oai-collapse-btn">Collapse</button>'
@@ -66,11 +73,6 @@ class ArticleSummaryExtension extends Minz_Extension
       . '<a href="' . htmlspecialchars($entry->link()) . '" target="_blank" rel="noopener noreferrer" class="oai-article-link oai-article-link-primary">🔗 Read Full Article on ' . parse_url($entry->link(), PHP_URL_HOST) . '</a>'
       . '<button class="oai-readability-toggle" data-request="' . $url_readability . '">📖 Toggle Reader Mode</button>'
       . '</div>'
-      . '<div class="oai-article-content" data-entry-id="' . $entry->id() . '">'
-      . '<div class="oai-article-original">'
-      . $entry->content()
-      . '</div>'
-      . '<div class="oai-article-readable" style="display: none;"></div>'
       . '</div>'
     );
     return $entry;
