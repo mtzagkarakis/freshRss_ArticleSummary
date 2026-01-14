@@ -587,6 +587,51 @@ body.reader .entry {
   margin: 1em auto;
 }
 
+/* Text content via CSS pseudo-elements (prevents text extraction in FreshRSS subtitles) */
+.oai-summary-title::before {
+  content: "AI Summary & Q&A";
+}
+
+.oai-collapse-btn::before {
+  content: "Expand";
+}
+
+.oai-summary-wrap:not(.collapsed) .oai-collapse-btn::before {
+  content: "Collapse";
+}
+
+.oai-summary-btn::before {
+  content: "Summarize";
+}
+
+.oai-qa-button::before {
+  content: "Ask a Question";
+}
+
+.oai-chat-send::before {
+  content: "Send";
+}
+
+.oai-article-link-primary::before {
+  content: "🔗 Read Full Article on ";
+}
+
+.oai-article-link-primary::after {
+  content: attr(data-domain);
+}
+
+.oai-readability-toggle::before {
+  content: "📖 Toggle Reader Mode";
+}
+
+.oai-readability-toggle.active::before {
+  content: "Show Original";
+}
+
+.oai-readability-toggle.loading::before {
+  content: "Loading...";
+}
+
 /* Responsive design for tablets and smaller laptops */
 @media (max-width: 1200px) {
   .oai-summary-wrap {

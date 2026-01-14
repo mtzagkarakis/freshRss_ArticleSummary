@@ -17,7 +17,7 @@ function configureSummarizeButtons() {
     for (var target = e.target; target && target != this; target = target.parentNode) {
 
       if (target.matches('.flux_header')) {
-        target.nextElementSibling.querySelector('.oai-summary-btn').innerHTML = 'Summarize'
+        // Button text is now handled by CSS pseudo-elements
       }
 
       if (target.matches('.oai-summary-btn')) {
@@ -451,7 +451,7 @@ function configureCollapseButtons() {
         e.stopPropagation();
         const container = target.closest('.oai-summary-wrap');
         container.classList.toggle('collapsed');
-        target.textContent = container.classList.contains('collapsed') ? 'Expand' : 'Collapse';
+        // Text is now handled by CSS pseudo-elements
         break;
       }
     }
@@ -492,7 +492,7 @@ async function toggleReadabilityMode(button) {
     container.classList.remove('readability-mode');
     originalContent.style.display = '';
     readableContent.style.display = 'none';
-    button.textContent = 'Toggle Reader Mode';
+    // Text is now handled by CSS pseudo-elements
     button.classList.remove('active');
   } else {
     // Check if readable content is already loaded
@@ -501,12 +501,12 @@ async function toggleReadabilityMode(button) {
       container.classList.add('readability-mode');
       originalContent.style.display = 'none';
       readableContent.style.display = '';
-      button.textContent = 'Show Original';
+      // Text is now handled by CSS pseudo-elements
       button.classList.add('active');
     } else {
       // Need to fetch readable content
       button.disabled = true;
-      button.textContent = 'Loading...';
+      button.classList.add('loading');
 
       try {
         const url = button.dataset.request;
@@ -529,7 +529,8 @@ async function toggleReadabilityMode(button) {
           container.classList.add('readability-mode');
           originalContent.style.display = 'none';
           readableContent.style.display = '';
-          button.textContent = 'Show Original';
+          button.classList.remove('loading');
+          // Text is now handled by CSS pseudo-elements
           button.classList.add('active');
         } else {
           throw new Error(xresp.response?.data || 'Failed to load readable content');
@@ -539,6 +540,7 @@ async function toggleReadabilityMode(button) {
         alert('Failed to load reader mode: ' + error.message);
       } finally {
         button.disabled = false;
+        button.classList.remove('loading');
       }
     }
   }
